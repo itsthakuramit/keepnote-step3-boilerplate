@@ -2,6 +2,11 @@ package com.stackroute.keepnote.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /*
  * The class "User" will be acting as the data model for the User Table in the database. 
  * Please note that this class is annotated with @Entity annotation. 
@@ -10,6 +15,7 @@ import java.util.Date;
  * Java object to recreate it as a table in your database.
  */
 
+@Entity
 public class User {
 
 	/*
@@ -20,47 +26,70 @@ public class User {
 	 * and toString method.The value of userAddedDate should not be accepted from
 	 * the user but should be always initialized with the system date
 	 */
-
+	
+	@Id
+	private String userId;
+	private String userName;
+	private String userPassword;
+	private String userMobile;
+	private Date userAddeDate;
+	
 	public User() {
-
+		super();
 	}
 
-	public User(String string, String string1, String string2, String string3, Date date) {
-
+	public User(String string, String string1, String string2, String string3, Date date) {		
+		userId=string;
+		userName=string1;
+		userPassword=string2;
+		userMobile=string3;
+		userAddeDate=date;
 	}
 
 	public String getUserId() {
-		return null;
+		return userId;
 	}
 
 	public void setUserId(String string) {
-
+		userId=string;
+	}
+	
+	public String getUserName() {
+		return userName;
 	}
 
 	public void setUserName(String string) {
-
+		userName=string;
 	}
 
 	public String getUserPassword() {
-		return null;
-
+		return userPassword;
 	}
 
 	public void setUserPassword(String string) {
-
+		userPassword=string;
 	}
 
 	public String getUserMobile() {
-		return null;
-
+		return userMobile;
 	}
 
 	public void setUserMobile(String string) {
-
+		userMobile=string;
+	}
+	
+	public Date getUserAddedDate() {
+		return userAddeDate;
 	}
 
 	public void setUserAddedDate(Date date) {
-
+		userAddeDate=date;
 	}
 
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", userName=" + userName + ", userPassword=" + userPassword + ", userMobile="
+				+ userMobile + ", userAddeDate=" + userAddeDate + "]";
+	}
+	
 }
