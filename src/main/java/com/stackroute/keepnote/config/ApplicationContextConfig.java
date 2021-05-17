@@ -44,25 +44,14 @@ public class ApplicationContextConfig {
 	 * name 2. Database URL 3. UserName 4. Password
 	 */
 	@Bean
-	@Autowired
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/step3db");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
-		return dataSource;
-	}
-	/*
-	 * Use this configuration while submitting solution in hobbes.
-	 * dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-	 * dataSource.setUrl("jdbc:mysql://" + System.getenv("MYSQL_HOST") + ":3306/" +
-	 * System.getenv("MYSQL_DATABASE")
-	 * +"?verifyServerCertificate=false&useSSL=false&requireSSL=false");
-	 * dataSource.setUsername(System.getenv("MYSQL_USER"));
-	 * dataSource.setPassword(System.getenv("MYSQL_PASSWORD"));
-	 */
-
+	    dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+	    dataSource.setUrl("jdbc:mysql://" + System.getenv("MYSQL_HOST") + ":3306/" + System.getenv("MYSQL_DATABASE") +"?verifyServerCertificate=false&useSSL=false&requireSSL=false");
+	    dataSource.setUsername(System.getenv("MYSQL_USER"));
+	    dataSource.setPassword(System.getenv("MYSQL_PASSWORD"));
+        return dataSource;	 
+}
 	/*
 	 * create a getter for Hibernate properties here we have to mention 1. show_sql
 	 * 2. Dialect 3. hbm2ddl
@@ -74,7 +63,6 @@ public class ApplicationContextConfig {
 	 * class through which we get sessions and perform database operations.
 	 */
 	@Bean
-	@Autowired
 	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
 		sessionFactoryBean.setDataSource(dataSource);
@@ -96,7 +84,6 @@ public class ApplicationContextConfig {
 	 * ensures data integrity.
 	 */
 	@Bean
-	@Autowired
 	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager hibernatetransactionmanager = new HibernateTransactionManager();
 		hibernatetransactionmanager.setSessionFactory(sessionFactory);
