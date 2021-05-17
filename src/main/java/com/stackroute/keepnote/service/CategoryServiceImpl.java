@@ -9,8 +9,6 @@ import com.stackroute.keepnote.dao.CategoryDAO;
 import com.stackroute.keepnote.exception.CategoryNotFoundException;
 import com.stackroute.keepnote.model.Category;
 
-import net.bytebuddy.asm.Advice.Return;
-
 /*
 * Service classes are used here to implement additional business logic/validation 
 * This class has to be annotated with @Service annotation.

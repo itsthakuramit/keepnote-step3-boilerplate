@@ -42,6 +42,9 @@ public class CategoryDAOImpl implements CategoryDAO {
 	 * Create a new category
 	 */
 	public boolean createCategory(Category category) {
+		long millis=System.currentTimeMillis();  
+		java.sql.Date date=new java.sql.Date(millis);  
+		category.setCategoryCreationDate(date);
 		sessionFactory.getCurrentSession().save(category);
 		sessionFactory.getCurrentSession().flush();
 		return true;
@@ -80,6 +83,9 @@ public class CategoryDAOImpl implements CategoryDAO {
 			if(getCategoryById(category.getCategoryId())==null)
 				flag =false;
 			else {
+				long millis=System.currentTimeMillis();  
+				java.sql.Date date=new java.sql.Date(millis);  
+				category.setCategoryCreationDate(date);
 				sessionFactory.getCurrentSession().clear();
 				sessionFactory.getCurrentSession().update(category);
 				sessionFactory.getCurrentSession().flush();

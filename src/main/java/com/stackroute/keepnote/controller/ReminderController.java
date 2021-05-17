@@ -72,15 +72,17 @@ public class ReminderController {
 	 * method".
 	 */
 
-	@PostMapping("/remider")
-	public ResponseEntity<?> add(@RequestBody Reminder reminder, HttpSession httpSession) {
-		if (httpSession != null && httpSession.getAttribute("loggedInUserId") != null) {
+	@PostMapping("/reminder")
+	public ResponseEntity<?> addReminder(@RequestBody Reminder reminder, HttpSession session) {
+		if (session != null && session.getAttribute("loggedInUserId") != null) {
 			if (reminderService.createReminder(reminder))
 				return new ResponseEntity<Reminder>(reminder, HttpStatus.CREATED);
 			else
 				return new ResponseEntity<String>("Reminder can't be created", HttpStatus.CONFLICT);
-		} else
+
+		} else {
 			return new ResponseEntity<Reminder>(reminder, HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	/*
@@ -133,10 +135,10 @@ public class ReminderController {
 					throw new ReminderNotFoundException("not found");
 				return new ResponseEntity<Reminder>(reminder, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<String>("Note not found", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity<String>("User not logged in", HttpStatus.UNAUTHORIZED);
 			}
 		} catch (ReminderNotFoundException e) {
-			return new ResponseEntity<String>("Note not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>("Reminder not found", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -176,16 +178,16 @@ public class ReminderController {
 	 */
 
 	@GetMapping("/reminder/{id}")
-	public ResponseEntity<?> getReminderById(@PathVariable int id, HttpSession session) throws ReminderNotFoundException {
+	public ResponseEntity<?> getReminderById(@PathVariable int id, HttpSession session)
+			throws ReminderNotFoundException {
 		if (session != null && session.getAttribute("loggedInUserId") != null) {
-				Reminder reminder = reminderService.getReminderById(id);
-				if (reminder == null) {
-					return new ResponseEntity<String>("not found", HttpStatus.NOT_FOUND);
-				} else {
-					return new ResponseEntity<Reminder>(reminder, HttpStatus.OK);
-				}
+			Reminder reminder = reminderService.getReminderById(id);
+			if (reminder == null) {
+				return new ResponseEntity<String>("not found", HttpStatus.NOT_FOUND);
+			} else {
+				return new ResponseEntity<Reminder>(reminder, HttpStatus.OK);
 			}
-		 else {
+		} else {
 			return new ResponseEntity<String>("Not logged in", HttpStatus.UNAUTHORIZED);
 		}
 	}

@@ -43,6 +43,9 @@ public class ReminderDAOImpl implements ReminderDAO {
 	 */
 
 	public boolean createReminder(Reminder reminder) {
+		long millis=System.currentTimeMillis();  
+		java.sql.Date date=new java.sql.Date(millis); 
+		reminder.setReminderCreationDate(date);
 		sessionFactory.getCurrentSession().save(reminder);
 		sessionFactory.getCurrentSession().flush();
 		return true;
@@ -60,6 +63,9 @@ public class ReminderDAOImpl implements ReminderDAO {
 			if(getReminderById(reminder.getReminderId())==null)
 				flag=false;
 			else {
+				long millis=System.currentTimeMillis();  
+				java.sql.Date date=new java.sql.Date(millis); 
+				reminder.setReminderCreationDate(date);
 				sessionFactory.getCurrentSession().clear();
 				sessionFactory.getCurrentSession().update(reminder);
 				sessionFactory.getCurrentSession().flush();

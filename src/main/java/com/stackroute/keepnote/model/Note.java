@@ -31,18 +31,17 @@ public class Note {
 	 */
 	
 	@Id
-	@Column(nullable=false)
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int noteId;
 	private String noteTitle;
 	private String noteContent;
 	private String noteStatus;
 	private Date createdAt;
+	private String createdBy;
 	@ManyToOne
 	private Category category;
 	@ManyToOne
 	private Reminder reminder;
-	private String createdBy;
+	
 	
 
 	public Note() {

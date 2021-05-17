@@ -154,10 +154,8 @@ public class NoteController {
 		if (session != null && session.getAttribute("loggedInUserId") != null) {
 			List<Note> notes = noteService.getAllNotesByUserId(session.getAttribute("loggedInUserId").toString());
 			return new ResponseEntity<List<Note>>(notes, HttpStatus.OK);
-
 		} else {
 			return new ResponseEntity<String>("Not found", HttpStatus.UNAUTHORIZED);
 		}
 	}
-
 }

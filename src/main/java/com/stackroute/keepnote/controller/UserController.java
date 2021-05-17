@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,6 @@ import com.stackroute.keepnote.service.UserService;
  * format. Starting from Spring 4 and above, we can use @RestController annotation which 
  * is equivalent to using @Controller and @ResposeBody annotation
  */
-
 @RestController
 public class UserController {
 
@@ -33,12 +33,11 @@ public class UserController {
 	 * autowiring) Please note that we should not create an object using the new
 	 * keyword
 	 */
-	
 	@Autowired
 	private UserService userService;
 
 	public UserController(UserService userService) {
-		this.userService=userService;
+		this.userService = userService;
 	}
 
 	/*
@@ -56,16 +55,15 @@ public class UserController {
 	 * This handler method should map to the URL "/user/register" using HTTP POST
 	 * method
 	 */
-	
 	@PostMapping("/user/register")
-	public ResponseEntity<?> addUser(@RequestBody User user) {
+	public ResponseEntity<?> registerUser(@RequestBody User user) {
 		try {
 			userService.registerUser(user);
-			return new ResponseEntity<User>(user, HttpStatus.CREATED);
+			return new ResponseEntity<String>("User Created", HttpStatus.CREATED);
 		} catch (UserAlreadyExistException e) {
-			return new ResponseEntity<User>(user, HttpStatus.CONFLICT);
+			return new ResponseEntity<String>("User already exists", HttpStatus.CONFLICT);
 		}
-		
+
 	}
 
 	/*
@@ -81,24 +79,21 @@ public class UserController {
 	 */
 	
 	@PutMapping("/user/{id}")
-	public ResponseEntity<?> updateUser(@RequestBody User user, HttpSession httpSession) {
-		
+	public ResponseEntity<?> updateUser(@RequestBody User user, HttpSession session) {
 		try {
-			if(!httpSession.getAttribute("loggedInUserId").equals(user.getUserId())) {
+			if (!session.getAttribute("loggedInUserId").equals(user.getUserId())) {
 				return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
-			}		
-		User newUser = userService.updateUser(user, user.getUserId());
-		if(newUser == null)
+			}
+			User userUpdated = userService.updateUser(user, user.getUserId());
+			if (userUpdated != null) {
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			} else
+				return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+		} catch (NullPointerException e) {
+			return new ResponseEntity<String>("User is unauthorized to perform the action", HttpStatus.UNAUTHORIZED);
+		} catch (Exception e) {
 			return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);
-		else
-			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		catch (NullPointerException e) {
-            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-		catch (Exception e) {
-            return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);
-        }		
 	}
 
 	/*
@@ -113,25 +108,21 @@ public class UserController {
 	 * This handler method should map to the URL "/user/{id}" using HTTP Delete
 	 * method" where "id" should be replaced by a valid userId without {}
 	 */
-	
-	public ResponseEntity<?> deleteUser(@PathVariable String userId, HttpSession HttpSession) {
-
+	@DeleteMapping("/user/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable String id, HttpSession session) {
 		try {
-			if (HttpSession.getAttribute("loggedInUserId") != null
-					&& HttpSession.getAttribute("loggedInUserId").equals(userId)) {
-				if (userService.deleteUser(userId))
-					return new ResponseEntity<String>("Deleted Successfully", HttpStatus.OK);
+			if (session.getAttribute("loggedInUserId") != null && session.getAttribute("loggedInUserId").equals(id)) {
+				if (!userService.deleteUser(id))
+					throw new Exception("Not Found");
 				else
-					throw new Exception("not found");
+					return new ResponseEntity<String>("Deleted Successfully", HttpStatus.OK);
 			} else {
-				return new ResponseEntity<String>("User not found", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity<String>("User is unauthorized to perform the action", HttpStatus.UNAUTHORIZED);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
 		}
-
 	}
-	
 
 	/*
 	 * Define a handler method which will show details of a specific user handle
@@ -143,22 +134,23 @@ public class UserController {
 	 * using HTTP GET method where "id" should be replaced by a valid userId without
 	 * {}
 	 */
-	
 	@GetMapping("/user/{id}")
-    public ResponseEntity<?> getUser(@PathVariable String userId, User user, HttpSession httpSession) {
-        try {
-            if(httpSession.getAttribute("loggedInUserId")!=null && httpSession.getAttribute("loggedInUserId").equals(userId)) {
-                if(userService.getUserById(userId)==null)
-                    throw new Exception("not found");
-                else
-                    return new ResponseEntity<User>(user, HttpStatus.OK);
-            }
-            else {
-                return new ResponseEntity<String>("User not found", HttpStatus.UNAUTHORIZED);
-            }
-        } catch(Exception e) {
-            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
-        }
-    }
+	public ResponseEntity<?> getUser(@PathVariable String id, User user, HttpSession session) {
+		try {
+			if (session.getAttribute("loggedInUserId") != null && session.getAttribute("loggedInUserId").equals(id)) {
+				if (userService.getUserById(id) == null)
+					throw new Exception("Not found");
+				else
+				{
+					user =userService.getUserById(id);
+					return new ResponseEntity<User>(user, HttpStatus.OK);
+				}
+			} else {
+				return new ResponseEntity<String>("User is unauthorized to perform the action", HttpStatus.UNAUTHORIZED);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+		}
+	}
 
 }

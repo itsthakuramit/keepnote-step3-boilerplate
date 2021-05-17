@@ -43,6 +43,9 @@ public class UserDaoImpl implements UserDAO {
 	 */
 
 	public boolean registerUser(User user) {
+		long millis=System.currentTimeMillis();  
+		java.sql.Date date=new java.sql.Date(millis);  
+		user.setUserAddedDate(date);
 		sessionFactory.getCurrentSession().save(user);
 		sessionFactory.getCurrentSession().flush();
 		return true;
@@ -56,6 +59,9 @@ public class UserDaoImpl implements UserDAO {
 			if(getUserById(user.getUserId())==null)
 				return false;
 			else {
+				long millis=System.currentTimeMillis();  
+				java.sql.Date date=new java.sql.Date(millis);  
+				user.setUserAddedDate(date);
 				sessionFactory.getCurrentSession().clear();
 				sessionFactory.getCurrentSession().update(user);
 				sessionFactory.getCurrentSession().flush();
@@ -69,7 +75,6 @@ public class UserDaoImpl implements UserDAO {
 	public User getUserById(String UserId) {
 		
 		User newUser = sessionFactory.getCurrentSession().get(User.class, UserId);
-		sessionFactory.getCurrentSession().flush();
 		return newUser;
 	}
 

@@ -47,6 +47,9 @@ public class NoteDAOImpl implements NoteDAO {
 	 */
 	
 	public boolean createNote(Note note) {
+		long millis=System.currentTimeMillis();  
+		java.sql.Date date=new java.sql.Date(millis); 
+		note.setNoteCreatedAt(date);
 		Session session=sessionFactory.getCurrentSession();
 		session.save(note);
 		session.flush();
@@ -115,6 +118,9 @@ public class NoteDAOImpl implements NoteDAO {
 			if(getNoteById(note.getNoteId())==null)
 				flag=false;
 			else {
+				long millis=System.currentTimeMillis();  
+				java.sql.Date date=new java.sql.Date(millis); 
+				note.setNoteCreatedAt(date);
 				sessionFactory.getCurrentSession().clear();
 				sessionFactory.getCurrentSession().update(note);
 				sessionFactory.getCurrentSession().flush();

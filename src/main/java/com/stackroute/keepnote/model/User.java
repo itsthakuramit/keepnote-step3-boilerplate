@@ -28,10 +28,15 @@ public class User {
 	 */
 	
 	@Id
+	@Column(length = 50)
 	private String userId;
+	@Column(length = 50)
 	private String userName;
+	@Column(length = 50)
 	private String userPassword;
+	@Column(length = 50)
 	private String userMobile;
+	@Column(length = 50)
 	private Date userAddeDate;
 	
 	public User() {

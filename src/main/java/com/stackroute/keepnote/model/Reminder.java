@@ -34,13 +34,13 @@ public class Reminder {
 	 */
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int reminderId;
 	private String reminderName;
 	private String reminderDescription;
 	private String reminderType;
 	private String reminderCreatedBy;
-	private Date reminderCreationDate; 
+	private Date reminderCreationDate;
+	
 	@OneToMany
 	@JsonIgnore
 	private List<Note> notes;

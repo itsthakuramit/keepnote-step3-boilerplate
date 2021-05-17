@@ -34,7 +34,6 @@ public class Category {
 	 */
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int categoryId;
 	private String categoryName;
 	private String categoryDescription;
